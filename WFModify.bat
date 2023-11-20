@@ -45,6 +45,7 @@ if /i "%CONFIRM%" equ "Y" (
         if "!DIRECTIONS!" equ "inbound outbound" (
             netsh advfirewall firewall add rule name="Allow Port !PORT! Inbound" dir=in action=allow protocol=!PROTOCOL! localport=!PORT!
             netsh advfirewall firewall add rule name="Allow Port !PORT! Outbound" dir=out action=allow protocol=!PROTOCOL! localport=!PORT!
+            echo Firewall rules added successfully.
         ) else (
             for %%d in (!DIRECTIONS!) do (
                 if /i %%d equ inbound (
@@ -52,8 +53,6 @@ if /i "%CONFIRM%" equ "Y" (
                 ) else (
                     if /i %%d equ outbound (
                         netsh advfirewall firewall add rule name="Allow Port !PORT! Outbound" dir=out action=allow protocol=!PROTOCOL! localport=!PORT!
-                    ) else (
-                        echo Invalid direction: %%d
                     )
                 )
             )
