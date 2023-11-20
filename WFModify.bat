@@ -1,4 +1,12 @@
 @echo off
+cls
+echo ----------------------------------------
+echo Windows Firewall Rules Modification Script
+echo Created by Andrew Cross
+echo Version: 1.0
+echo GitHub: https://github.com/crossat/ETCMC-Node-Helper-script
+echo ----------------------------------------
+
 setlocal enabledelayedexpansion
 
 set SCRIPT_DIR=%~dp0
@@ -9,7 +17,8 @@ if not exist %RULES_FILE% (
     exit /b 1
 )
 
-echo Firewall rules to be added:
+echo - Firewall rules to be added:
+echo - 
 
 for /f "tokens=1,2,3" %%a in (%RULES_FILE%) do (
     set PORT=%%a
@@ -24,18 +33,24 @@ set /p CONFIRM=Do you want to apply these firewall rules? (Y/N):
 
 if /i "%CONFIRM%" equ "Y" (
     cls
-    echo Applying firewall rules...
+    echo ----------------------------------------
+    echo Windows Firewall Rules Modification Script
+    echo Created by Andrew Cross
+    echo Version: 1.0
+    echo GitHub: https://github.com/crossat/ETCMC-Node-Helper-script
+    echo ----------------------------------------
+    echo Step 1 - Applying firewall rules...
     for /f "tokens=1,2,3" %%a in (%RULES_FILE%) do (
         set PORT=%%a
         set PROTOCOL=%%b
         set DIRECTIONS=%%c
 
-        powershell -command "& { New-NetFirewallRule -DisplayName 'Allow Port !PORT! Inbound' -Direction Inbound -LocalPort !PORT! -Protocol !PROTOCOL! -Action Allow }"
-        powershell -command "& { New-NetFirewallRule -DisplayName 'Allow Port !PORT! Outbound' -Direction Outbound -LocalPort !PORT! -Protocol !PROTOCOL! -Action Allow }"
+        powershell -command "& { New-NetFirewallRule -DisplayName 'Allow Port !PORT! Inbound' -Direction Inbound -LocalPort !PORT! -Protocol !PROTOCOL! -Action Allow }" >nul
+        powershell -command "& { New-NetFirewallRule -DisplayName 'Allow Port !PORT! Outbound' -Direction Outbound -LocalPort !PORT! -Protocol !PROTOCOL! -Action Allow }" >nul
     )
 
-    cls
-    echo Verifiying Firewall rules have been applied...
+    echo Step 2 - Verifiying Firewall rules have been applied...
+    echo -
 
     for /f "tokens=1,2,3" %%a in (%RULES_FILE%) do (
         set PORT=%%a
@@ -49,19 +64,21 @@ if /i "%CONFIRM%" equ "Y" (
         for /f "delims=" %%i in ('powershell -command "& { Get-NetFirewallRule -DisplayName 'Allow Port !PORT! Outbound' }"') do set OUTBOUND_RULE_FOUND=true
 
         if !INBOUND_RULE_FOUND! equ true (
-            echo Allow Port !PORT! Inbound Protocol: !PROTOCOL! applied successfully.
+            echo Allow Port !PORT! Inbound Protocol: !PROTOCOL! - applied successfully.
         ) else (
-            echo Allow Port !PORT! Inbound Protocol: !PROTOCOL! NOT applied.
+            echo Allow Port !PORT! Inbound Protocol: !PROTOCOL! - NOT applied.
         )
 
         if !OUTBOUND_RULE_FOUND! equ true (
-            echo Allow Port !PORT! Outbound Protocol: !PROTOCOL! applied successfully.
+            echo Allow Port !PORT! Outbound Protocol: !PROTOCOL! - applied successfully.
         ) else (
-            echo Allow Port !PORT! Outbound Protocol: !PROTOCOL! NOT applied.
+            echo Allow Port !PORT! Outbound Protocol: !PROTOCOL! - NOT applied.
         )
     )
-
-    echo Firewall rules verification complete.
+    
+    echo -
+    echo - Firewall rules verification complete.
+    echo - 
     pause
 ) else (
     echo Operation cancelled by user.
