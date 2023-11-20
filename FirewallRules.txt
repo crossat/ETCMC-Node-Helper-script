@@ -1,0 +1,2 @@
+30303 TCP inbound outbound
+30303 UDP inbound outbound
