@@ -27,6 +27,9 @@ Each port to open should be on a separate row with properties separated by a sin
 #### Inbound Only Rules
 <code>30303 UDP inbound</code>
 
+# Donations
+ETC wallet for donations: 0x57d7A18441eeAE2A81bBd9f806d061Cdf0cBB383
+
 #### Both Ways Rules
 
 <code>30303 TCP inbound outbound</code>
